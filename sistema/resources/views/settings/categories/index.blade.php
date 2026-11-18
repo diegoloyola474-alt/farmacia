@@ -23,7 +23,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <h6 class="text-uppercase small text-muted mb-3">Total de registros encontrados: 1</h6>
+                    <h6 class="text-uppercase small text-muted mb-3">Total de registros encontrados: {{$categories->count()}}</h6>
                     <table id="display" class="table table-sm table-hover w-100 bg-white">
                         <thead>
                             <tr>
@@ -34,24 +34,36 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                $contador = 1;
+                            @endphp
+                            @foreach($categories as $category)
                             <tr>
-                                <td class="text-center align-middle">1</td>
-                                <td class="text-start align-middle">Lorem, ipsum dolor.</td>
-                                <td class="text-start align-middle">lorem ipsum dolor sit amet</td>
+                                <td class="text-center align-middle">{{ $contador }}</td>
+                                <td class="text-start align-middle">{{ $category->name }}</td>
+                                <td class="text-start align-middle">{{ $category->description }}</td>
                                 <td class="text-center align-middle">
                                     <div class="dropdown">
                                         <button class="btn btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                             <i class="bi bi-three-dots-vertical"></i>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
-                                            <li><a class="dropdown-item" href="">Editar</a></li>
+                                            <li><a class="dropdown-item" href="{{ route('categories.edit' , $category->id) }}">Editar</a></li>
                                             <li>
+                                                <form action="{{ route ('categories.destroy', $category->id) }}" method="POST" onsubmit="return confirm('¿Estas seguro de que quieres eliminar este registro?');">
+                                                    @csrf
+                                                    @method('DELETE')
                                                 <button type="submit" class="dropdown-item">Eliminar</button>
                                             </li>
                                         </ul>
+                                    </form>
                                     </div>
                                 </td>
                             </tr>
+                            @php
+                                $contador++;
+                            @endphp
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
