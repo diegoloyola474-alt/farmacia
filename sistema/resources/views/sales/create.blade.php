@@ -16,7 +16,7 @@
             @csrf
 
             <div class="row">
-                <div class="col-12 col-md-4 mb-3">
+                <div class="col-12 col-md-6 mb-3">
                     <label for="customer_id" class="form-label">Cliente</label>
                     <select name="customer_id" id="customer_id" class="form-select @error('customer_id') is-invalid @enderror">
                         <option value="">Seleccione un cliente</option>
@@ -29,20 +29,7 @@
                     @enderror
                 </div>
 
-                <div class="col-12 col-md-4 mb-3">
-                    <label for="user_id" class="form-label">Vendedor</label>
-                    <select name="user_id" id="user_id" class="form-select @error('user_id') is-invalid @enderror">
-                        <option value="">Seleccione un vendedor</option>
-                        @foreach($users as $user)
-                            <option value="{{ $user->id }}" {{ (string) old('user_id') === (string) $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
-                        @endforeach
-                    </select>
-                    @error('user_id')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="col-12 col-md-4 mb-3">
+                <div class="col-12 col-md-6 mb-3">
                     <label for="date" class="form-label">Fecha y hora</label>
                     <input type="datetime-local" name="date" id="date"
                         class="form-control @error('date') is-invalid @enderror"

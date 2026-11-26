@@ -37,6 +37,18 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
+    public function hasRole(string ...$roles): bool
+    {
+        $roleName = $this->role?->name;
+
+        // Conserva los permisos de caja sin renombrar el rol existente en la base.
+        if ($roleName === 'Vendedor') {
+            $roleName = 'Cajero';
+        }
+
+        return in_array($roleName, $roles, true);
+    }
+
     public function sales(): HasMany
     {
         return $this->hasMany(Sale::class);
