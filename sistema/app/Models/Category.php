@@ -5,14 +5,11 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-
 #[Fillable(['name', 'description'])]
 class Category extends Model
-
 {
     public function medicines(): HasMany
     {
         return $this->hasMany(Medicine::class);
     }
-    
 }
