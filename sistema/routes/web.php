@@ -27,6 +27,9 @@ Route::middleware(['auth', PreventBackHistory::class])->group(function () {
     Route::middleware('role:Administrador,Químico farmacéutico')->group(function () {
         Route::resource('medicines', MedicineController::class)->except('show');
         Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
+        Route::get('reports/export', [ReportController::class, 'export'])->name('reports.export');
+        Route::get('reports/pdf', [ReportController::class, 'pdf'])->name('reports.pdf');
+        Route::get('reports/excel', [ReportController::class, 'excel'])->name('reports.excel');
     });
 
     Route::middleware('role:Administrador')->group(function () {

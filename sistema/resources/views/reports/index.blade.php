@@ -32,10 +32,27 @@
                 @error('to')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
             <div class="col-12 col-md-3">
+                <label for="user_id" class="form-label">Vendedor</label>
+                <select name="user_id" id="user_id" class="form-select">
+                    <option value="">Todos</option>
+                    @foreach($users as $user)<option value="{{ $user->id }}" @selected((string) $selectedUser === (string) $user->id)>{{ $user->name }}</option>@endforeach
+                </select>
+            </div>
+            <div class="col-12 col-md-3">
+                <label for="customer_id" class="form-label">Cliente</label>
+                <select name="customer_id" id="customer_id" class="form-select">
+                    <option value="">Todos</option>
+                    @foreach($customers as $customer)<option value="{{ $customer->id }}" @selected((string) $selectedCustomer === (string) $customer->id)>{{ $customer->name }}</option>@endforeach
+                </select>
+            </div>
+            <div class="col-12 col-md-3">
                 <button type="submit" class="btn btn-primary text-white w-100">Generar reporte</button>
             </div>
             <div class="col-12 col-md-3">
-                <button type="button" class="btn btn-outline-secondary w-100" onclick="window.print()"><i class="bi bi-printer me-1"></i>Imprimir</button>
+                <a href="{{ route('reports.pdf', request()->query()) }}" class="btn btn-outline-danger w-100"><i class="bi bi-printer me-1"></i>Imprimir PDF</a>
+            </div>
+            <div class="col-12 col-md-3">
+                <a href="{{ route('reports.excel', request()->query()) }}" class="btn btn-outline-success w-100"><i class="bi bi-file-earmark-spreadsheet me-1"></i>Excel</a>
             </div>
         </form>
     </div>
@@ -109,6 +126,7 @@
                         <th class="small text-uppercase">Vendedor</th>
                         <th class="small text-uppercase text-center">Ventas</th>
                         <th class="small text-uppercase text-end">Total</th>
+                        <th class="small text-uppercase text-end">Promedio</th>
                     </tr></thead>
                     <tbody>
                         @forelse($bySeller as $row)
@@ -116,9 +134,10 @@
                                 <td>{{ $row->name }}</td>
                                 <td class="text-center">{{ $row->sales_count }}</td>
                                 <td class="text-end">S/ {{ number_format($row->total, 2) }}</td>
+                                <td class="text-end">S/ {{ number_format($row->average, 2) }}</td>
                             </tr>
                         @empty
-                            <tr><td colspan="3" class="text-center text-muted">Sin ventas en el periodo.</td></tr>
+                            <tr><td colspan="4" class="text-center text-muted">Sin ventas en el periodo.</td></tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -139,6 +158,7 @@
                 <th class="small text-uppercase">Cliente</th>
                 <th class="small text-uppercase">Vendedor</th>
                 <th class="small text-uppercase text-end">IGV</th>
+                        <th class="small text-uppercase text-end">Subtotal</th>
                 <th class="small text-uppercase text-end">Total</th>
             </tr></thead>
             <tbody>
@@ -149,10 +169,11 @@
                         <td>{{ $sale->customer->name }}</td>
                         <td>{{ $sale->user->name }}</td>
                         <td class="text-end">S/ {{ number_format($sale->igv, 2) }}</td>
+                        <td class="text-end">S/ {{ number_format($sale->total - $sale->igv, 2) }}</td>
                         <td class="text-end">S/ {{ number_format($sale->total, 2) }}</td>
                     </tr>
                 @empty
-                    <tr><td colspan="6" class="text-center text-muted">Sin ventas en el periodo.</td></tr>
+                    <tr><td colspan="7" class="text-center text-muted">Sin ventas en el periodo.</td></tr>
                 @endforelse
             </tbody>
         </table>
@@ -169,16 +190,20 @@
                 <th class="small text-uppercase">Medicamento</th>
                 <th class="small text-uppercase">Categoría</th>
                 <th class="small text-uppercase text-center">Stock</th>
+                <th class="small text-uppercase text-end">Precio venta</th>
+                <th class="small text-uppercase text-center">Estado</th>
             </tr></thead>
             <tbody>
-                @forelse($lowStock as $medicine)
+                @forelse($medicines as $medicine)
                     <tr>
                         <td>{{ $medicine->name }}</td>
                         <td>{{ $medicine->category->name }}</td>
                         <td class="text-center {{ $medicine->stock == 0 ? 'text-danger fw-bold' : '' }}">{{ $medicine->stock }}</td>
+                        <td class="text-end">S/ {{ number_format($medicine->price, 2) }}</td>
+                        <td class="text-center"><span class="badge {{ $medicine->stock === 0 ? 'bg-danger' : ($medicine->stock <= $lowStockLimit ? 'bg-warning text-dark' : 'bg-success') }}">{{ $medicine->stock === 0 ? 'Agotado' : ($medicine->stock <= $lowStockLimit ? 'Stock bajo' : 'Disponible') }}</span></td>
                     </tr>
                 @empty
-                    <tr><td colspan="3" class="text-center text-muted">No hay medicamentos con stock bajo.</td></tr>
+                    <tr><td colspan="5" class="text-center text-muted">No hay medicamentos registrados.</td></tr>
                 @endforelse
             </tbody>
         </table>

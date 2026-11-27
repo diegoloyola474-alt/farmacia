@@ -7,6 +7,9 @@
   <title>FARM SJB | @yield('title')</title>
   <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
   <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+  <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
+  <link rel="icon" href="{{ asset('icons/icon-192.svg') }}" type="image/svg+xml">
+  <meta name="theme-color" content="#0d6efd">
   @stack('styles')
 </head>
 
@@ -80,7 +83,13 @@
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('js/app.js') }}"></script>
+@stack('vendor-scripts')
 @stack('scripts')
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('{{ asset('sw.js') }}').catch(() => {}));
+}
+</script>
 
 
 </body>
